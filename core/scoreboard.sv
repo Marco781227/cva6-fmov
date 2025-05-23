@@ -87,7 +87,9 @@ module scoreboard #(
     // Issue pointer - RVFI
     output logic [ CVA6Cfg.NrIssuePorts-1:0][CVA6Cfg.TRANS_ID_BITS-1:0] rvfi_issue_pointer_o,
     // Commit pointer - RVFI
-    output logic [CVA6Cfg.NrCommitPorts-1:0][CVA6Cfg.TRANS_ID_BITS-1:0] rvfi_commit_pointer_o
+    output logic [CVA6Cfg.NrCommitPorts-1:0][CVA6Cfg.TRANS_ID_BITS-1:0] rvfi_commit_pointer_o,
+    // Condition signal from ex
+    input logic cond_valid_i
 );
 
   // this is the FIFO struct of the issue queue
@@ -220,6 +222,10 @@ module scoreboard #(
         // write the fflags back from the FPU (exception valid is never set), leave tval intact
         else if(CVA6Cfg.FpPresent && (mem_q[trans_id_i[i]].sbe.fu == ariane_pkg::FPU || mem_q[trans_id_i[i]].sbe.fu == ariane_pkg::FPU_VEC)) begin
           mem_n[trans_id_i[i]].sbe.ex.cause = ex_i[i].cause;
+        end
+        // Disable Rd if instr is fmov and condition is false
+        if (ariane_pkg::is_fmov(mem_n[trans_id_i[i]].sbe.op) && !cond_valid_i) begin
+          mem_n[trans_id_i[i]].sbe.rd = 5'b0;
         end
       end
     end

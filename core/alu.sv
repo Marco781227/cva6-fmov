@@ -34,7 +34,10 @@ module alu
     // ALU result - ISSUE_STAGE
     output logic [CVA6Cfg.XLEN-1:0] result_o,
     // ALU branch compare result - branch_unit
-    output logic alu_branch_res_o
+    output logic alu_branch_res_o,
+    // Result comparison
+    output logic cond_valid_o
+
 );
 
   logic [CVA6Cfg.XLEN-1:0] operand_a_rev;
@@ -130,7 +133,8 @@ module alu
   end
 
   // ---------
-  // Shifts
+  // Shiftsariane_regfile_ff.sv    commit_stage.sv        cva6_fifo_v3.sv                        cvfpu                          ex_stage.sv                               include           lsu_bypass.sv           raw_checker.sv
+
   // ---------
 
   // TODO: this can probably optimized significantly
@@ -379,6 +383,46 @@ module alu
         ORCB: result_o = orcbw_result;
         REV8: result_o = rev8w_result;
 
+          // Conditional Float Mov comparison
+        FMOVEQ : begin // move zero to rd if rs1 is equal to zero else rs2
+          if (|fu_data_i.operand_a) begin
+            result_o = fu_data_i.operand_b;
+            cond_valid_o = 1'b1;
+          end else begin
+            result_o = 0;
+            cond_valid_o = 1'b0;
+          end
+        end
+
+        FMOVNE: begin // move zero to rd if rs1 is nonzero else rs2
+          if (|fu_data_i.operand_a) begin
+            result_o = 0;
+            cond_valid_o = 1'b0;
+          end else begin
+            result_o = fu_data_i.operand_b;
+            cond_valid_o = 1'b1;
+          end
+        end
+
+        FMOVLT: begin // move zero to rd if rs1 < 0 else rs2
+          if (fu_data_i.operand_a[riscv::XLEN-1] == 1'b1) begin
+            result_o = fu_data_i.operand_b;
+            cond_valid_o = 1'b1;
+          end else begin
+            result_o = 0;
+            cond_valid_o = 1'b0;
+          end
+        end
+
+        FMOVGE: begin // move zero to rd if rs1 >= 0 else rs2
+          if (fu_data_i.operand_a[riscv::XLEN-1] == 1'b0) begin
+            result_o = fu_data_i.operand_b;
+            cond_valid_o = 1'b1;
+          end else begin
+            result_o = 0;
+            cond_valid_o = 1'b0;
+          end
+        end
         default:
         if (fu_data_i.operation == SLLIUW && CVA6Cfg.IS_XLEN64)
           result_o = {{CVA6Cfg.XLEN-32{1'b0}}, fu_data_i.operand_a[31:0]} << fu_data_i.operand_b[5:0];  // Left Shift 32 bit unsigned

@@ -501,6 +501,8 @@ module cva6
   logic x_issue_ready_ex_id;
   logic [31:0] x_off_instr_id_ex;
   logic x_transaction_rejected;
+  // FMOV
+  logic cond_valid;
   // --------------
   // EX <-> COMMIT
   // --------------
@@ -922,7 +924,9 @@ module cva6
       .rvfi_commit_pointer_o(rvfi_commit_pointer),
       .rvfi_rs1_o           (rvfi_rs1),
       .rvfi_rs2_o           (rvfi_rs2),
-      .orig_instr_aes_bits  (orig_instr_aes)
+      .orig_instr_aes_bits  (orig_instr_aes),
+      //FMOV cond
+      .cond_valid_ex_i      (cond_valid)
   );
 
   // ---------
@@ -1069,7 +1073,9 @@ module cva6
       .pmpaddr_i               (pmpaddr),
       //RVFI
       .rvfi_lsu_ctrl_o         (rvfi_lsu_ctrl),
-      .rvfi_mem_paddr_o        (rvfi_mem_paddr)
+      .rvfi_mem_paddr_o        (rvfi_mem_paddr),
+      //FMOV cond
+      .cond_valid_o            (cond_valid)
   );
 
   // ---------

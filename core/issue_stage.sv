@@ -167,7 +167,9 @@ module issue_stage
     // Information dedicated to RVFI - RVFI
     output logic [CVA6Cfg.NrIssuePorts-1:0][CVA6Cfg.XLEN-1:0] rvfi_rs2_o,
     // Original instruction bits for AES
-    output logic [5:0] orig_instr_aes_bits
+    output logic [5:0] orig_instr_aes_bits,
+    // FMOV
+    input logic cond_valid_ex_i
 );
   // ---------------------------------------------------
   // Scoreboard (SB) <-> Issue and Read Operands (IRO)
@@ -228,6 +230,7 @@ module issue_stage
       .trans_id_i              (trans_id_i),
       .wbdata_i                (wbdata_i),
       .ex_i                    (ex_ex_i),
+      .cond_valid_i            (cond_valid_ex_i),
       .wt_valid_i,
       .x_we_i,
       .x_rd_i,

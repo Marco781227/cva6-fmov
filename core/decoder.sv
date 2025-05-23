@@ -117,7 +117,8 @@ module decoder
     UIMM,
     JIMM,
     RS3,
-    MUX_RD_RS3
+    MUX_RD_RS3,
+    FIMM
   } imm_select;
 
   logic [CVA6Cfg.XLEN-1:0] imm_i_type;
@@ -125,6 +126,8 @@ module decoder
   logic [CVA6Cfg.XLEN-1:0] imm_sb_type;
   logic [CVA6Cfg.XLEN-1:0] imm_u_type;
   logic [CVA6Cfg.XLEN-1:0] imm_uj_type;
+
+  logic [7:0] fimm_exp;
 
   // ---------------------------------------
   // Accelerator instructions' first-pass decoder
@@ -190,6 +193,33 @@ module decoder
 
     if (~ex_i.valid) begin
       case (instr.rtype.opcode)
+
+        // Conditional Float Mov
+        riscv::OpcodeOpFMOV: begin
+          if (CVA6Cfg.FpPresent && fs_i != riscv::Off) begin // only generate decoder if FP extensions are enabled (static)
+            instruction_o.rs1[4:0] = instr.rtype.rs1;
+            instruction_o.rd[4:0] = instr.rtype.rd;
+            instruction_o.fu = ALU;
+
+            if (instr.rtype.funct3[12] == 1'b0) begin
+              instruction_o.rs2[4:0] = instr.rtype.rs2;
+            end else begin
+              imm_select = FIMM;
+            end
+
+            unique case (instr.rtype.funct3[14:13])
+              2'b00:   instruction_o.op = ariane_pkg::FMOVEQ;
+              2'b01:   instruction_o.op = ariane_pkg::FMOVNE;
+              2'b10:   instruction_o.op = ariane_pkg::FMOVLT;
+              2'b11:   instruction_o.op = ariane_pkg::FMOVGE;
+              default: illegal_instr = 1'b1;
+            endcase
+
+          end else begin
+            illegal_instr = 1'b1;
+          end
+        end
+
         riscv::OpcodeSystem: begin
           instruction_o.fu = CSR;
           instruction_o.rs1 = instr.itype.rs1;
@@ -1737,6 +1767,13 @@ module decoder
         // result holds address of operand rs3 which is in rd field
         instruction_o.result  = {{CVA6Cfg.XLEN - 5{1'b0}}, instr.rtype.rd};
         instruction_o.use_imm = 1'b0;
+      end
+      FIMM: begin
+        fimm_exp = instruction_i[30:26] + 7'b1110000; // add the rest (112) between biais of 5 bits exponent (15) and 8 bits exponent (127)
+        instruction_o.result = { // immediate takes format : sign|exponent|mantissa
+          instruction_i[31], fimm_exp, instruction_i[25:20], {riscv::XLEN - 15{1'b0}}
+        };
+        instruction_o.use_imm = 1'b1;
       end
       default: begin
         instruction_o.result  = {CVA6Cfg.XLEN{1'b0}};

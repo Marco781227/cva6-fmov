@@ -233,6 +233,7 @@ package riscv;
   localparam OpcodeOpImm = 7'b00_100_11;
   localparam OpcodeAuipc = 7'b00_101_11;
   localparam OpcodeOpImm32 = 7'b00_110_11;
+  localparam OpcodeOpFMOV = OpcodeCustom0;
   // Quadrant 1
   localparam OpcodeStore = 7'b01_000_11;
   localparam OpcodeStoreFp = 7'b01_001_11;
