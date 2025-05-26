@@ -1,10 +1,60 @@
 m255
 K4
 z2
+!s11f vlog 2022.3_1 2022.08, Aug 12 2022
 13
 !s112 1.1
 !i10d 8192
 !i10e 25
 !i10f 100
 cModel Technology
-d/nfs/home/m1info18/Documents/cva6/core/include
+Z0 d/nfs/home/m1info18/Documents/cva6/core/include
+Xconfig_pkg
+Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+!s110 1748007620
+!i10b 1
+!s100 7aYP^c>zObARPJXP04VAm1
+IJ99zUNeSV@:aD`P_YUI]83
+S1
+R0
+w1748007620
+8/tmp/nvim.m1info18/EjGWDF/2/config_pkg.sv
+F/tmp/nvim.m1info18/EjGWDF/2/config_pkg.sv
+!i122 0
+Z2 L0 10 0
+VJ99zUNeSV@:aD`P_YUI]83
+Z3 OL;L;2022.3_1;75
+r1
+!s85 0
+31
+!s108 1748007620.000000
+!s107 /tmp/nvim.m1info18/EjGWDF/2/config_pkg.sv|
+!s90 -quiet|-lint|/tmp/nvim.m1info18/EjGWDF/2/config_pkg.sv|
+!i113 0
+Z4 o-quiet -lint -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z5 tCvgOpt 0
+Xcva6_config_pkg
+R1
+DXx4 work 10 config_pkg 0 22 J99zUNeSV@:aD`P_YUI]83
+!s110 1748008333
+!i10b 1
+!s100 2G`1N>kMcF:ZCUM8QN=Dm3
+I>CVGWGY8?]Rb3aioo7QYd0
+S1
+R0
+w1748008333
+8/tmp/nvim.m1info18/ELTYGf/12/cv32a60x_config_pkg.sv
+F/tmp/nvim.m1info18/ELTYGf/12/cv32a60x_config_pkg.sv
+!i122 9
+R2
+V>CVGWGY8?]Rb3aioo7QYd0
+R3
+r1
+!s85 0
+31
+!s108 1748008333.000000
+!s107 /tmp/nvim.m1info18/ELTYGf/12/cv32a60x_config_pkg.sv|
+!s90 -quiet|-lint|/tmp/nvim.m1info18/ELTYGf/12/cv32a60x_config_pkg.sv|
+!i113 0
+R4
+R5

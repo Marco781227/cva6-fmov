@@ -843,7 +843,7 @@ module issue_read_operands
   logic [CVA6Cfg.NrCommitPorts-1:0][CVA6Cfg.XLEN-1:0] wdata_pack;
   logic [CVA6Cfg.NrCommitPorts-1:0]                   we_pack;
 
-  //adjust address to read from register file (when synchronous RAM is used reads take one cycle, so we advance the address)   
+  //adjust address to read from register file (when synchronous RAM is used reads take one cycle, so we advance the address)
   for (genvar i = 0; i <= CVA6Cfg.NrIssuePorts - 1; i++) begin
     assign raddr_pack[i*OPERANDS_PER_INSTR+0] = CVA6Cfg.FpgaEn && CVA6Cfg.FpgaAlteraEn ? issue_instr_i_prev[i].rs1[4:0] : issue_instr_i[i].rs1[4:0];
     assign raddr_pack[i*OPERANDS_PER_INSTR+1] = CVA6Cfg.FpgaEn && CVA6Cfg.FpgaAlteraEn ? issue_instr_i_prev[i].rs2[4:0] : issue_instr_i[i].rs2[4:0];
@@ -1018,6 +1018,10 @@ module issue_read_operands
       branch_predict_o         <= {cf_t'(0), {CVA6Cfg.VLEN{1'b0}}};
       x_transaction_rejected_o <= 1'b0;
     end else begin
+      if (ariane_pkg::is_fmov(issue_instr_i[0].op)) begin
+        $display("Value of op_a = ", fu_data_n[0].operand_a);
+        $display("Value of op_b = ", fu_data_n[0].operand_b);
+      end
       fu_data_q <= fu_data_n;
       if (CVA6Cfg.ZKN) begin
         orig_instr_aes_bits <= {orig_instr_i[0][31:30], orig_instr_i[0][23:20]};

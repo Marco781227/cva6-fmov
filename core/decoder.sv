@@ -197,6 +197,7 @@ module decoder
         // Conditional Float Mov
         riscv::OpcodeOpFMOV: begin
           if (CVA6Cfg.FpPresent && fs_i != riscv::Off) begin // only generate decoder if FP extensions are enabled (static)
+            $display("hello");
             instruction_o.rs1[4:0] = instr.rtype.rs1;
             instruction_o.rd[4:0] = instr.rtype.rd;
             instruction_o.fu = ALU;
@@ -214,6 +215,10 @@ module decoder
               2'b11:   instruction_o.op = ariane_pkg::FMOVGE;
               default: illegal_instr = 1'b1;
             endcase
+            $display("Valeur de rs1 : ",instr.rtype.rs1);
+            $display("Valeur de rs2 : ",instr.rtype.rs2);
+            $display("Valeur de rd : ",instr.rtype.rd);
+            $display("Operation : ",instruction_o.op);
 
           end else begin
             illegal_instr = 1'b1;

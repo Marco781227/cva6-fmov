@@ -270,10 +270,6 @@ package ariane_pkg;
   // ---------------
 
   typedef enum logic [7:0] {  // Conditional Float Mov
-    FMOVEQ,
-    FMOVNE,
-    FMOVLT,
-    FMOVGE,
     // basic ALU op
     ADD,
     SUB,
@@ -534,7 +530,11 @@ package ariane_pkg;
     SHA512SIG0,
     SHA512SIG1,
     SHA512SUM0,
-    SHA512SUM1
+    SHA512SUM1,
+    FMOVEQ,
+    FMOVNE,
+    FMOVLT,
+    FMOVGE
   } fu_op;
 
   function automatic logic op_is_branch(input fu_op op);
@@ -544,9 +544,9 @@ package ariane_pkg;
     endcase
   endfunction
 
-  function automatic logic is_fmov(fu_op op);
+  function automatic logic is_fmov(input fu_op op);
     unique case (op) inside
-      [FMOVEQ : FMOVGE] : return 1'b1;
+      FMOVEQ, FMOVNE, FMOVLT, FMOVGE : return 1'b1;
       default : return 0'b0;
     endcase
   endfunction
@@ -564,7 +564,6 @@ package ariane_pkg;
       FSGNJ,  // Sign Injections
       FMV_F2X,  // FPR-GPR Moves
       FCMP,  // Comparisons
-      [FMOVEQ : FMOVGE], // Conditional Float Mov
       FCLASS,  // Classifications
       [VFMIN : VFCPKCD_D],  // Additional Vectorial FP ops
       ACCEL_OP_FS1:
@@ -583,7 +582,8 @@ package ariane_pkg;
       FCVT_F2F,  // Vectorial F2F Conversions requrie target
       [FSGNJ : FMV_F2X],  // Sign Injections and moves mapped to SGNJ
       FCMP,  // Comparisons
-      [VFMIN : VFCPKCD_D]:
+      [VFMIN : VFCPKCD_D],
+      [FMOVEQ : FMOVGE]: // Conditional Float Mov
       return 1'b1;  // Additional Vectorial FP ops
       default: return 1'b0;  // all other ops
     endcase
@@ -612,10 +612,10 @@ package ariane_pkg;
       FCVT_F2F,  // Float-Float Casts
       FSGNJ,  // Sign Injections
       FMV_X2F,  // GPR-FPR Moves
-      [FMOVEQ : FMOVGE], // Conditional Float Mov
       [VFMIN : VFSGNJX],  // Vectorial MIN/MAX and SGNJ
       [VFCPKAB_S : VFCPKCD_D],  // Vectorial FP cast and pack ops
-      ACCEL_OP_FD:
+      ACCEL_OP_FD,
+      [FMOVEQ : FMOVGE]: // Conditional Float Mov
       return 1'b1;  // Accelerator instructions
       default: return 1'b0;  // all other ops
     endcase
