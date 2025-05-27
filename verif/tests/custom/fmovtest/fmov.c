@@ -110,11 +110,11 @@ int main() {
     uint32_t result = 0;
 
     asm volatile(
-	"addi t0, x0, 6\n"
-	"addi t1, x0, 10\n"
+	"lui t0, 100544\n"
+	"lui t1, 156000\n"
 	"sub t2, t1, t0\n"
 	"fmv.w.x f1, t0\n"
-	".word 0x0013C10B\n"
+	".word 0x3B33F10B\n"
     	"fmv.x.w %0, f2\n"
 	:"=r"(result)
 	);
@@ -125,3 +125,4 @@ int main() {
 
     return 0;
 }
+
