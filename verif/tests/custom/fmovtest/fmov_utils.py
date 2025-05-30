@@ -146,5 +146,5 @@ with open("/home/martin/Documents/Master1/TER/cva6-fmov/verif/tests/custom/fmovt
         if b[1:6] in ["00000","11111"] : continue
         y = hex_to_dec(x)
         print(f"hex={x},bin={b},float={y},floatf={y:.15f}")
-        f.write(f'// fmovLT x5 f2 IMM\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result!={y:.15f});\n// fmovEQ x5 f2 IMM\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result=={y:.15f});\n')
+        f.write(f'// fmovLT x5 f2 {y:15f}\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result!={y:.15f});\n// fmovEQ x5 f2 {y:15f}\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result=={y:.15f});\n')
 print("DONE")
