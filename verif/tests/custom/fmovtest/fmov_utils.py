@@ -6,7 +6,7 @@
 def dec_to_hex(x : float):
     # SUBNORMAL CASES
     if x == 0 : return "000" # 0.0 <=> 000 | same as 32bit
-    
+    if x == float('inf') : return "inf"
     # NORMAL CASES
     # mantisse length is 6 bits
     mantisse = x
@@ -15,6 +15,7 @@ def dec_to_hex(x : float):
     sign = "0" if x >= 0 else "1"
     # rewrite mantisse as 1.xxxxxx
     while mantisse < 1:
+        print("quoicou ???")
         mantisse *= 2
         exponent -= 1
     while mantisse >= 2:
@@ -37,7 +38,7 @@ def dec_to_hex(x : float):
 def hex_to_dec(x : str):
     # SUBNORMAL CASES
     if x == "000" : return 0.0 # 0.0 <=> 000 | same as 32bit
-
+    if x == "inf" : return float('inf')
     # NORMAL CASES
     # convert to binary
     b = format(int(x,16),'012b') # format '012b' convert int to binary of length 12 with leading zeros
@@ -77,11 +78,13 @@ def write_fmov_guided():
         
     
 # returns fmov hexcode
-def compile_fmov(cond : int, rs1 : int, rd : int, operand2 : int | float):
+def compile_fmov(cond : int, rs1 : int, rd : int, operand2 : int | float | str):
     if isinstance(operand2,float):
         return dec_to_hex(operand2)+format(int(format(rs1,'05b')+format(cond,'02b')+"1"+format(rd,'05b')+"0001011",2),'05x')
     elif isinstance(operand2,int):
         return format(int(format(operand2,'05b')+format(rs1,'05b')+format(cond,'02b')+"0"+format(rd,'05b')+"0001011",2),'08x')
+    elif isinstance(operand2,str):
+        return operand2+format(int(format(rs1,'05b')+format(cond,'02b')+"1"+format(rd,'05b')+"0001011",2),'05x')
     else:
         raise Exception("Bad arguments")
 
@@ -128,11 +131,20 @@ for y in all_y:
 print(f"total difference : {diff_total} | average difference : {diff_total/4096} | max difference : {max_diff}")
 
 print(f"min:{min_y} | max:{max_y}")
-"""
+
 
 print(fmov_from_string(input("$")))
 print("---------------------------")
 print(write_fmov_guided())
-
+"""
 # TODO : Write automatic test generator for FMOV
-
+with open("/home/martin/Documents/Master1/TER/cva6-fmov/verif/tests/custom/fmovtest/auto-generated_tests.txt", "w") as f:
+    
+    for i in range(4096):
+        x = format(i,'03x')
+        b = format(i,'012b')
+        if b[1:6] in ["00000","11111"] : continue
+        y = hex_to_dec(x)
+        print(f"hex={x},bin={b},float={y},floatf={y:.15f}")
+        f.write(f'// fmovLT x5 f2 IMM\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result!={y:.15f});\n// fmovEQ x5 f2 IMM\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result=={y:.15f});\n')
+print("DONE")
