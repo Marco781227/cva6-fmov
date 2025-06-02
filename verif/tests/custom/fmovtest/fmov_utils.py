@@ -177,22 +177,22 @@ with open("/home/martin/Documents/Master1/TER/cva6-fmov/verif/tests/custom/fmovt
         # Test of FMOV reg/reg
         # test for each condition when the condition is false
         chaine += f'// [TEST{4096*8+i*8:05d}] fmovEQ x5 f2 f3 : x5 != 0 so f2 should not be updated\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, 1\\n" ".word 0x{compile_fmov(3,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8:05d}"); return 1;{'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, 1\\n" ".word 0x{compile_fmov(3,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8:05d}"); return 1;{'}'}\n'
         chaine += f'// [TEST{4096*8+i*8+1:05d}] fmovNE x5 f2 f3 : x5 == 0 so f2 should not be updated\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, 0\\n" ".word 0x{compile_fmov(1,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+1:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, 0\\n" ".word 0x{compile_fmov(1,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+1:05d}"); return 1; {'}'}\n'
         chaine += f'// [TEST{4096*8+i*8+2:05d}] fmovLT x5 f2 f3 : x5 >= 0 so f2 should not be updated\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+2:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+2:05d}"); return 1; {'}'}\n'
         chaine += f'// [TEST{4096*8+i*8+3:05d}] fmovGE x5 f2 f3 : x5 < 0 so f2 should not be updated\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, -1\\n" ".word 0x{compile_fmov(3,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+3:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, -1\\n" ".word 0x{compile_fmov(3,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result==0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+3:05d}"); return 1; {'}'}\n'
         # test for each condition when the condition is true
         chaine += f'// [TEST{4096*8+i*8+4:05d}] fmovEQ x5 f2 f3 : x5 == 0 so f2 should be 0x{number}\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+4:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+4:05d}"); return 1; {'}'}\n'
         chaine += f'// [TEST{4096*8+i*8+5:05d}] fmovNE x5 f2 f3 : x5 != 0 so f2 should be 0x{number}\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, 1\\n" ".word 0x{compile_fmov(1,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+5:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, 1\\n" ".word 0x{compile_fmov(1,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+5:05d}"); return 1; {'}'}\n'
         chaine += f'// [TEST{4096*8+i*8+6:05d}] fmovLT x5 f2 f3 : x5 < 0 so f2 should be 0x{number}\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, -1\\n" ".word 0x{compile_fmov(2,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+6:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, -1\\n" ".word 0x{compile_fmov(2,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+6:05d}"); return 1; {'}'}\n'
         chaine += f'// [TEST{4096*8+i*8+7:05d}] fmovGE x5 f2 f3 : x5 >= 0 so f2 should be 0x{number}\n'
-        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6" "lui x5, 0\\n" ".word 0x{compile_fmov(3,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+7:05d}"); return 1; {'}'}\n'
+        chaine += f'asm volatile("lui x6, 0x{number[0:5].upper()}\\n" "addi x6, x6, 0x{number[5:].upper()}\\n" "fmv.w.x f3, x6\\n" "lui x5, 0\\n" ".word 0x{compile_fmov(3,5,2,3)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!=0x{number}) {'{'}print_uart("FAILED TEST{4096*8+i*8+7:05d}"); return 1; {'}'}\n'
         f.write(chaine)
     
 print("Auto-generated tests written to auto-generated_tests.txt")  
