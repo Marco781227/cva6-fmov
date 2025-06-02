@@ -1,5 +1,5 @@
 # This file contains functions used as a commodity for converting decimal values to 12bit floating point representation
-
+import struct
 
 # ---------------------------------------------------------------------------------------------------------------------
 # classic decimal to floating point conversion adapted to 12bit structure
@@ -102,7 +102,10 @@ def fmov_from_string(instr : str):
     operand2 = int(toks[3][1:]) if toks[3][0] == 'f' else float(toks[3])
     return compile_fmov(cond,rs1,rd,operand2)
 
-    
+
+# Converts a float to its 32-bit hexadecimal representation.
+def dec_to_hex32(f):
+  return hex(struct.unpack('<I', struct.pack('<f', f))[0])
 
 # WORK IN PROGRESS
 
@@ -137,6 +140,8 @@ print(fmov_from_string(input("$")))
 print("---------------------------")
 print(write_fmov_guided())
 """
+
+
 # TODO : Write automatic test generator for FMOV
 with open("/home/martin/Documents/Master1/TER/cva6-fmov/verif/tests/custom/fmovtest/auto-generated_tests.txt", "w") as f:
     
@@ -146,5 +151,5 @@ with open("/home/martin/Documents/Master1/TER/cva6-fmov/verif/tests/custom/fmovt
         if b[1:6] in ["00000","11111"] : continue
         y = hex_to_dec(x)
         print(f"hex={x},bin={b},float={y},floatf={y:.15f}")
-        f.write(f'// fmovLT x5 f2 {y:15f}\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result!={y:.15f});\n// fmovEQ x5 f2 {y:15f}\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); assert(result=={y:.15f});\n')
+        f.write(f'// fmovLT x5 f2 {y}\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(2,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result=={dec_to_hex32(y)}) print_uart("Failed : fmovLT x5 f2 {y}");\n// fmovEQ x5 f2 {y}\nasm volatile("lui x5, 0\\n" ".word 0x{compile_fmov(0,5,2,x)}\\n" "fmv.x.w %0, f2\\n" :"=r"(result)); if (result!={dec_to_hex32(y)}) print_uart("Failed : fmovEQ x5 f2 {y}");\n')
 print("DONE")
