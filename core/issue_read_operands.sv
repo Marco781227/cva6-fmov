@@ -671,9 +671,9 @@ module issue_read_operands
       end
       // or is it an immediate (including PC), this is not the case for a store, control flow, and accelerator instructions
       // also make sure operand B is not already used as an FP operand
-      if (issue_instr_i[i].use_imm && (issue_instr_i[i].fu != STORE) && (issue_instr_i[i].fu != CTRL_FLOW) && (issue_instr_i[i].fu != ACCEL) && !(CVA6Cfg.FpPresent && is_rs2_fpr(
-              issue_instr_i[i].op
-          ))) begin
+      if (issue_instr_i[i].use_imm && (issue_instr_i[i].fu != STORE) && (issue_instr_i[i].fu != CTRL_FLOW) && (issue_instr_i[i].fu != ACCEL) && !((CVA6Cfg.FpPresent && is_rs2_fpr(
+              issue_instr_i[i].op)) && !is_fmov(issue_instr_i[i].op)
+          )) begin
         fu_data_n[i].operand_b = issue_instr_i[i].result;
       end
     end
@@ -1018,10 +1018,6 @@ module issue_read_operands
       branch_predict_o         <= {cf_t'(0), {CVA6Cfg.VLEN{1'b0}}};
       x_transaction_rejected_o <= 1'b0;
     end else begin
-      if (ariane_pkg::is_fmov(issue_instr_i[0].op)) begin
-        $display("Value of op_a = ", fu_data_n[0].operand_a);
-        $display("Value of op_b = ", fu_data_n[0].operand_b);
-      end
       fu_data_q <= fu_data_n;
       if (CVA6Cfg.ZKN) begin
         orig_instr_aes_bits <= {orig_instr_i[0][31:30], orig_instr_i[0][23:20]};

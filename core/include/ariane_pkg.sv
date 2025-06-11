@@ -583,7 +583,10 @@ package ariane_pkg;
       [FSGNJ : FMV_F2X],  // Sign Injections and moves mapped to SGNJ
       FCMP,  // Comparisons
       [VFMIN : VFCPKCD_D],
-      [FMOVEQ : FMOVGE]: // Conditional Float Mov
+      FMOVNE, // Conditional Float Mov
+      FMOVEQ,
+      FMOVLT,
+      FMOVGE:
       return 1'b1;  // Additional Vectorial FP ops
       default: return 1'b0;  // all other ops
     endcase

@@ -331,11 +331,6 @@ module alu
       SLTS, SLTU: result_o = {{CVA6Cfg.XLEN - 1{1'b0}}, less};
       // Conditional Float Mov comparison
       FMOVEQ : begin // move zero to rd if rs1 is equal to zero else rs2
-        $display("EQ");
-        $display("Value of op_a_ex = ", fu_data_i.operand_a);
-        $display("Value of op_b_ex = ", fu_data_i.operand_b);
-
-        $display(|fu_data_i.operand_a);
         if (|fu_data_i.operand_a) begin
           result_o = 0;
           cond_valid_o = 1'b0;
@@ -346,9 +341,6 @@ module alu
       end
 
       FMOVNE: begin // move zero to rd if rs1 is nonzero else rs2
-        $display("NE");
-        $display("Value of op_a_ex = ", fu_data_i.operand_a);
-        $display("Value of op_b_ex = ", fu_data_i.operand_b);
         if (|fu_data_i.operand_a) begin
           result_o = fu_data_i.operand_b;
           cond_valid_o = 1'b1;
@@ -359,9 +351,6 @@ module alu
       end
 
       FMOVLT: begin // move zero to rd if rs1 < 0 else rs2
-        $display("LT");
-        $display("Value of op_a_ex = ", fu_data_i.operand_a);
-        $display("Value of op_b_ex = ", fu_data_i.operand_b);
         if (fu_data_i.operand_a[riscv::XLEN-1] == 1'b1) begin
           result_o = fu_data_i.operand_b;
           cond_valid_o = 1'b1;
@@ -372,9 +361,6 @@ module alu
       end
 
       FMOVGE: begin // move zero to rd if rs1 >= 0 else rs2
-        $display("GE");
-        $display("Value of op_a_ex = ", fu_data_i.operand_a);
-        $display("Value of op_b_ex = ", fu_data_i.operand_b);
         if (fu_data_i.operand_a[riscv::XLEN-1] == 1'b0) begin
           result_o = fu_data_i.operand_b;
           cond_valid_o = 1'b1;
@@ -401,7 +387,6 @@ module alu
           default: ;
         endcase
       end
-        $display(fu_data_i.operation);
       unique case (fu_data_i.operation)
         // Integer minimum/maximum
         MAX:  result_o = less ? fu_data_i.operand_b : fu_data_i.operand_a;

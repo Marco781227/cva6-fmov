@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+
 #define UART_BASE 0x10000000
 
 #define UART_RBR UART_BASE + 0
@@ -107,21 +108,35 @@ void print_uart_byte(uint8_t byte)
 
 
 int main() {
-    uint32_t result = 0;
+    uint32_t result_instr1 = 0, result_instr2 = 0;
 
     asm volatile(
-	"addi t0, x0, 6\n"
-	"addi t1, x0, 10\n"
-	"sub t2, t1, t0\n"
-	"fmv.w.x f1, t0\n"
-	".word 0x0013C10B\n"
-    	"fmv.x.w %0, f2\n"
-	:"=r"(result)
+	"addi t1, x0, 3\n"
+	"addi t2, x0, 4\n"
+	"fmv.w.x f28, t1\n"
+	".word 0x01C3A10B\n"
+	"feq.s x7, f2, f28\n"
+	"add x28, x28, x7\n"
+	"feq.s x7, f2, f3\n"
+	"add x28, x28, x7\n"
+	//".word 0x01C3810B\n"
+	//".word 0x01C3C10B\n"
+	//".word 0x01C3E10B\n"
+	//"addi x6, x6, 8\n" "fmv.w.x f3, x6\n" "addi x5, x0, 1\n" ".word 0x0032810b\n"
+//	"addi x6, x0, 8\n" "fmv.w.x f3, x6\n" "addi x5, x0, 0\n" ".word 0x0032a10b\n" "fmv.x.w %0, f2\n"
+	"mv %0, x28\n"
+	:"=r"(result_instr1), "=r"(result_instr2)
+	:
+	:"x7", "f2", "f3", "f28"
 	);
 
-    print_uart("Résultat FMOV : 0x");
-    print_uart_int(result);
+    print_uart("Résultat FMOV INSTR1 : 0x");
+    print_uart_int(result_instr1);
+    print_uart("\n");
+    print_uart("Résultat FMOV INSTR2 : 0x");
+    print_uart_int(result_instr2);
     print_uart("\n");
 
     return 0;
 }
+

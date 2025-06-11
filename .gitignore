@@ -53,3 +53,4 @@ Bender.lock
 !/vendor/riscv/riscv-isa-manual/build/
 !/vendor/riscv/riscv-isa-manual/build/*
 .nvim/
+verif/sim/iti.trace
